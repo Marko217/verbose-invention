@@ -1,0 +1,313 @@
+﻿@model List<AgreementManagement.Web.Models.AgreementViewModel>
+@{
+    ViewData["Title"] = "Product";
+}
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x" crossorigin="anonymous">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.4.1/css/bootstrap-datepicker3.css" />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css">
+
+<div class="container">
+    <div class="row" style="margin-bottom:15px;">
+        <div class="col-4">
+            <div class="toast" role="alert" aria-live="assertive" aria-atomic="true" style="background-color:lightgreen">
+                <div class="toast-body">
+                    <strong>You have successfully logged in!</strong>
+                </div>
+            </div>
+        </div>
+        <div class="offset-4 col-4" style="text-align:right">
+            <button type="button" class="btn btn-success" data-toggle="modal" onclick="showModal()">New Agreement</button>
+        </div>
+    </div>
+    <table class="table table-hover" id="agreementTable">
+        <thead>
+            <tr>
+                <th >#</th>
+                <th >Username</th>
+                <th >Product Group Code</th>
+                <th >Group Description</th>
+                <th >Product Number</th>
+                <th >Product Description</th>
+                <th >Effective Date</th>
+                <th >Expiration Date</th>
+                <th >Product Price</th>
+                <th >New Price</th>
+                <th >Action</th>
+            </tr>
+        </thead>
+        @*<tbody>
+                    @if (Model != null)
+                    {
+                        int i = 0;
+                        foreach (var item in Model)
+                        {
+                            i++;
+                            <tr>
+                                <th style="text-align:center" scope="row">@i</th>
+                                <td title="@item.ProductDescription">@item.ProductDescription</td>
+                                <td title="@item.ProductNumber">@item.ProductNumber</td>
+                                <td style="text-align:right" title="@item.Price">@item.Price</td>
+                            </tr>
+                        }
+                    }
+            </tbody>*@
+    </table>
+</div>
+
+
+
+<div class="modal" tabindex="-1" id="agreementModal" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">New Agreement</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="addAgreementForm" >
+                    <div class="row form-group">
+                        <div class="col-md-6">
+                            <label for="group">Group </label>
+                            @*<input type="text" name="productGroupId" required class="form-control" id="productGroupId">*@
+                            <select name="productGroupId" id="productGroupId" asp-items="@ViewBag.ProductGroup"  class="form-select" onchange="productData()"></select>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="product">Product </label>
+                            <input type="text" name="productId" asp-items="@ViewBag.Product" class="form-control" id="productId">
+                        </div>
+                    </div>
+                    <div class="row form-group">
+                        <div class="col-md-6">
+                            <label for="effectiveDate">Effective Date </label>
+                            <input type="date" name="effectiveDate" class="form-control" id="effectiveDate" data-inputmask="'alias': 'date'">
+                        </div>
+                        <div class="col-md-6">
+                            <label for="expirationDate">Expiration Date </label>
+                            <input type="date" name="expirationDate" class="form-control" id="expirationDate" data-inputmask="'alias': 'date'">
+                        </div>
+                    </div>
+                    <div class="row form-group">
+                        <div class="col-md-6">
+                            <label for="newPrice">New Price </label>
+                            <input type="number" name="newPrice" class="form-control" id="newPrice" placeholder="0.00" data-inputmask="'alias': 'currency'">
+                        </div>
+                        <div class="col-md-2 offset-2 form-check" style="text-align:center">
+                            <label class="form-check-label" for="active">Active</label>
+                            <input type="checkbox" id="active" name="active">
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" onclick="postAgreement()" class="btn btn-primary">Save</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-gtEjrD/SeCtmISkJkNUaaKMoLD0//ElJ19smozuHV6z3Iehds+3Ulb9Bn9Plx0x4" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.18.1/moment.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/numeral.js/2.0.6/numeral.min.js"></script>
+
+
+<script src="~/lib/jquery-validation/dist/jquery.validate.js"></script>
+<script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
+
+<script>
+    $(function () {
+        $('.toast').toast('show');
+        setTimeout(hideToast, 3000);
+        var tabela = $('#agreementTable').DataTable({})
+
+        //inicijalizacijaTabele('agreementTable');
+    //    var tabela = $('#agreementTable').DataTable({
+    //        "destroy": true,
+    //        "processing": true,
+    //        "serverSide": true,
+    //        "ajax": {
+    //            "url": "/Agreement/AgreementData",
+    //            "type": "GET",
+    //            "datatype": "application/json"
+    //        },
+    //        "columns": [
+    //            { "data": "id" },
+    //            { "data": "user.userName" },
+    //            { "data": "productGroupId" },
+    //            { "data": "productGroup.groupDescription" },
+    //            { "data": "product.productNumber" },
+    //            { "data": "product.productDescription" },
+    //            { "data": "effectiveDate" },
+    //            { "data": "expirationDate" },
+    //            { "data": "productPrice" },
+    //            { "data": "newPrice" },
+    //            { "data": "id" },
+    //        ],
+    //        "columnDefs": [
+    //            {
+    //                "render": function (data, type, row, meta) {
+    //                    console.log(data);
+    //                    return tabela.page.info().start + meta.row + 1;
+    //                },
+    //                "className": "algRight", "searchable": false, "orderable": false, "targets": 0
+    //            },
+    //            { "className": "algLeft", "searchable": false, "orderable": false, "targets": 1 },
+    //            { "className": "algLeft", "searchable": false, "orderable": false, "targets": 2 },
+    //            { "className": "algLeft", "searchable": false, "orderable": false, "targets": 3 },
+    //            { "className": "algRight", "searchable": false, "orderable": false, "targets": 4 },
+    //            { "className": "algLeft", "searchable": false, "orderable": false, "targets": 5 },
+    //            { "className": "algLeft", "searchable": false, "orderable": false, "targets": 6 },
+    //            { "className": "algLeft", "searchable": false, "orderable": false, "targets": 7 },
+    //            {
+    //                "render": function (data, type, row, meta) {
+    //                    return numeral(data).format('0,0.00');
+    //                },
+    //                "className": "algLeft", "searchable": false, "orderable": false, "targets": 8
+    //            },
+    //            {
+    //                "render": function (data, type, row, meta) {
+    //                    return numeral(data).format('0,0.00');
+    //                },
+    //                "className": "algLeft", "searchable": false, "orderable": false, "targets": 9
+    //            },
+    //            {
+    //                "render": function (data, type, row, meta) {
+    //                    return "<a href='#' class='btn btn-primary' onclick='editAgreement(this)''>" + Edit + "</a>" + " " + "<a href='#' class='btn btn-danger' onclick='deleteAgreement(this)'>" + Delete + "</a>";
+
+    //                    //    return "<a href='#' class='btn btn-danger' onclick=editAgreement('" + row.productGroupId + "," + row.productId + "," + row.effectirningveDate + "," + row.expirationDate + "," + row.newPrice + "'); >Edit</a>" + " " + " <a href='#' class='btn btn-danger' onclick = deleteAgreement('" + data + "'); > Delete</a >";
+    //                },
+    //                "className": "algLeft", "searchable": false, "orderable": false, "targets": 10
+    //            }
+    //        ],
+    //        "ordering": true,
+    //        "paging": true,
+    //        "scrollX": true,
+    //        "pageLength": 20
+    //    });
+    });
+
+    function showModal() {
+        $('#agreementModal').modal('show');
+    }
+
+    function hideToast() {
+        $('.toast').toast('hide');
+    }
+
+    function productData() {
+
+        $.ajax({
+            type: 'GET',
+            url: '/Agreement/ProductSelect',
+            data: $("#addAgreementForm").serialize(),
+            contentType: "application/json",
+            dataType: 'json',
+        })
+            .done(function (response) {
+                console.log(response);
+            })
+            .fail(function (response) {
+                console.log("greska " + response);
+            })
+
+        //var groupProductId = document.getElementById('productGroupId').value;
+        //$.ajax({
+        //    cache: false,
+        //    type: "GET",
+        //    url: '/Agreement/ProductSelect' + '?id=' + groupProductId,
+        //    dataType: "json",
+        //    context: this,
+        //    success: function (data) {
+        //        console.log(data);
+        //        $('#productId').find('option').remove().end()
+        //        $.each(data, function (i, item) {
+        //            console.log(item.productDescription);
+        //            $('#productId').append($('<option>', {
+        //                value: item.id,
+        //                text: item.productDescription
+        //            }));
+        //        });
+        //    },
+        //    error: function (err) {
+        //        console.log(err);
+        //    }
+        //});
+    }
+
+    function postAgreement() {
+        $.ajax({
+            type: 'POST',
+            url: '/Agreement/AddAgreement',
+            data: $("#addAgreementForm").serialize(),
+            dataType: 'html',
+            contentType: 'application/x-www-form-urlencoded; charset-UTF-8'
+        })
+        .done(function (response) {
+            if (response == "1") {
+                console.log("Uspesan upis");
+                //inicijalizacijaTabele();
+                document.getElementById('productGroupId').value = "";
+                document.getElementById('productId').value = "";
+                document.getElementById('effectiveDate').value = "";
+                document.getElementById('expirationDate').value = "";
+                document.getElementById('newPrice').value = "";
+                document.getElementById('active').value = "";
+                $('#agreementModal').modal('hide');
+            }
+            else {
+                console.log("Greska pri upisu");
+            }
+        })
+        .fail(function (response) {
+            console.log("greska " + response);
+        })
+    }
+
+    function deleteAgreement(elem) {
+        var currentRow = $(elem).closest("tr");
+        var data = $('#agreementTable').DataTable().row(currentRow).data();
+        var id = data['id'];
+
+        $.ajax({
+            type: "GET",
+            url: '/Agreement/DeleteAgrement',
+            data: {
+                id: id
+            },
+            dataType: "json",
+            context: this,
+            async: false,
+            success: function (response) {
+                if (response == "1") {
+                    noty({ text: 'Uspesno obrisano!', type: 'success', layout: 'centerBig' }).show();
+                }
+                else {
+                    noty({ text: 'Neuspesno obrisan!', type: 'error', layout: 'centerBig' }).show();
+                }
+            }
+        });
+    }
+
+    function editAgreement(elem) {
+
+        var currentRow = $(elem).closest("tr");
+        var data = $('#agreementTable').DataTable().row(currentRow).data();
+
+        var group = data['productGroup'];
+        var product = data['product'];
+        var effectiveDate = data['effectiveDate'];
+        var expirationDate = data['expirationDate'];
+        var newPrice = data['newPrice'];
+
+        document.getElementById('group').value = group;
+        document.getElementById('product').value = product;
+        document.getElementById('effectiveDate').value = effectiveDate;
+        document.getElementById('expirationDate').value = expirationDate;
+        document.getElementById('newPrice').value = newPrice;
+        $('#agreementModal').modal('show');
+    }
+</script>
