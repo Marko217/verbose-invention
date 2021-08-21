@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -147,52 +148,36 @@ namespace WebApplication.Controllers
         public IActionResult DeleteAgrement(int id)
         {
             var rez = "0";
-            try
+            Agreement agree = _agreementService.GetAgreement(id);
+            if(agree != null)
             {
-                _agreementService.DeleteAgreement(id);
-                rez = "1";
-            }
-            catch(Exception ex)
-            {
-                var exception = ex;
+                try
+                {
+                    _agreementService.DeleteAgreement(id);
+                    rez = "1";
+                }
+                catch (Exception ex)
+                {
+                    var exception = ex;
+                }
+                return new JsonResult(rez);
             }
             return new JsonResult(rez);
         }
 
         [HttpGet]
-        public IActionResult ProductSelect(AgreementViewModel vm)
+        public IActionResult ProductSelect(int? id)
         {
             try
             {
-                IEnumerable<Product> products = _productService.GetProducts(vm.ProductGroupId);
+                IEnumerable<Product> products = _productService.GetProducts(id);
                 var list = _mapper.Map<List<Product>, List<ProductViewModel>>(products.ToList());
-
-
-                //IEnumerable<Product> nesto = null;
-                //var pom = nesto.FirstOrDefault();
-                //var productList = new List<SelectListItem>();
-                //bool selected = true;
-
-                //foreach (var item in list)
-                //{
-                //    if (selected)
-                //    {
-                //        productList.Add(new SelectListItem() { Text = item.ProductDescription, Value = item.Id.ToString(), Selected = true });
-                //    }*
-                //    else
-                //    {
-                //        productList.Add(new SelectListItem() { Text = item.ProductDescription, Value = item.Id.ToString(), Selected = false });
-                //        selected = false;
-                //    }
-                //}
-
-                //ViewBag.Product = productList; }
-                return Ok(list);
+                return Ok(list.ToList());
             }
             catch (Exception ex)
             {
                 _logger.LogInformation("ProductSelect error " + ex);
-                return Ok(ex);
+                return Json(null);
 
             }
 

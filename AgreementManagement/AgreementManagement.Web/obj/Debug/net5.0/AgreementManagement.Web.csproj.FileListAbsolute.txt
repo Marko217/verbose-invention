@@ -471,3 +471,10 @@ C:\Users\Goran\Desktop\Agreement management\AgreementManagement\AgreementManagem
 C:\Users\Goran\Desktop\Agreement management\AgreementManagement\AgreementManagement.Web\bin\Debug\net5.0\Serilog.Sinks.Console.dll
 C:\Users\Goran\Desktop\Agreement management\AgreementManagement\AgreementManagement.Web\bin\Debug\net5.0\Serilog.Sinks.Debug.dll
 C:\Users\Goran\Desktop\Agreement management\AgreementManagement\AgreementManagement.Web\bin\Debug\net5.0\Serilog.Sinks.File.dll
+C:\Users\Goran\Desktop\Agreement management\AgreementManagement\AgreementManagement.Web\bin\Debug\net5.0\System.Web.Mvc.dll
+C:\Users\Goran\Desktop\Agreement management\AgreementManagement\AgreementManagement.Web\bin\Debug\net5.0\System.Web.Razor.dll
+C:\Users\Goran\Desktop\Agreement management\AgreementManagement\AgreementManagement.Web\bin\Debug\net5.0\System.Web.Helpers.dll
+C:\Users\Goran\Desktop\Agreement management\AgreementManagement\AgreementManagement.Web\bin\Debug\net5.0\System.Web.WebPages.Deployment.dll
+C:\Users\Goran\Desktop\Agreement management\AgreementManagement\AgreementManagement.Web\bin\Debug\net5.0\System.Web.WebPages.Razor.dll
+C:\Users\Goran\Desktop\Agreement management\AgreementManagement\AgreementManagement.Web\bin\Debug\net5.0\System.Web.WebPages.dll
+C:\Users\Goran\Desktop\Agreement management\AgreementManagement\AgreementManagement.Web\bin\Debug\net5.0\Microsoft.Web.Infrastructure.dll
