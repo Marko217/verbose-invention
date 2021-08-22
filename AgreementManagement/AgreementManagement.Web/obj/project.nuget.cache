@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "+Dl+WC+WX9fuXALV/8GreG4vwRNNp/63KRbzto5S7iVASoR/bC1i9/QnrnEn9kX9pkTifRtbg2hY9V04bHVzRQ==",
+  "dgSpecHash": "ICRDQ9mVQEbKLJGo51GiBx52247AunIUEmcILxyLwN8pj5QU3wF3gI9BFgddFh4A2ZdXWhUQUXSuSJ/5IuhwaQ==",
   "success": true,
   "projectFilePath": "C:\\Users\\Goran\\Desktop\\Agreement management\\AgreementManagement\\AgreementManagement.Web\\AgreementManagement.Web.csproj",
   "expectedPackageFiles": [
@@ -20,6 +20,8 @@
     "C:\\Users\\Goran\\.nuget\\packages\\microsoft.aspnetcore.http.features\\5.0.9\\microsoft.aspnetcore.http.features.5.0.9.nupkg.sha512",
     "C:\\Users\\Goran\\.nuget\\packages\\microsoft.aspnetcore.identity.entityframeworkcore\\5.0.8\\microsoft.aspnetcore.identity.entityframeworkcore.5.0.8.nupkg.sha512",
     "C:\\Users\\Goran\\.nuget\\packages\\microsoft.aspnetcore.identity.ui\\5.0.8\\microsoft.aspnetcore.identity.ui.5.0.8.nupkg.sha512",
+    "C:\\Users\\Goran\\.nuget\\packages\\microsoft.aspnetcore.jsonpatch\\5.0.9\\microsoft.aspnetcore.jsonpatch.5.0.9.nupkg.sha512",
+    "C:\\Users\\Goran\\.nuget\\packages\\microsoft.aspnetcore.mvc.newtonsoftjson\\5.0.9\\microsoft.aspnetcore.mvc.newtonsoftjson.5.0.9.nupkg.sha512",
     "C:\\Users\\Goran\\.nuget\\packages\\microsoft.aspnetcore.mvc.razor.extensions\\5.0.9\\microsoft.aspnetcore.mvc.razor.extensions.5.0.9.nupkg.sha512",
     "C:\\Users\\Goran\\.nuget\\packages\\microsoft.aspnetcore.mvc.razor.runtimecompilation\\5.0.9\\microsoft.aspnetcore.mvc.razor.runtimecompilation.5.0.9.nupkg.sha512",
     "C:\\Users\\Goran\\.nuget\\packages\\microsoft.aspnetcore.razor\\2.2.0\\microsoft.aspnetcore.razor.2.2.0.nupkg.sha512",
@@ -83,7 +85,8 @@
     "C:\\Users\\Goran\\.nuget\\packages\\microsoft.web.infrastructure\\1.0.0\\microsoft.web.infrastructure.1.0.0.nupkg.sha512",
     "C:\\Users\\Goran\\.nuget\\packages\\microsoft.win32.registry\\4.7.0\\microsoft.win32.registry.4.7.0.nupkg.sha512",
     "C:\\Users\\Goran\\.nuget\\packages\\microsoft.win32.systemevents\\4.7.0\\microsoft.win32.systemevents.4.7.0.nupkg.sha512",
-    "C:\\Users\\Goran\\.nuget\\packages\\newtonsoft.json\\11.0.2\\newtonsoft.json.11.0.2.nupkg.sha512",
+    "C:\\Users\\Goran\\.nuget\\packages\\newtonsoft.json\\12.0.2\\newtonsoft.json.12.0.2.nupkg.sha512",
+    "C:\\Users\\Goran\\.nuget\\packages\\newtonsoft.json.bson\\1.0.2\\newtonsoft.json.bson.1.0.2.nupkg.sha512",
     "C:\\Users\\Goran\\.nuget\\packages\\owin\\1.0.0\\owin.1.0.0.nupkg.sha512",
     "C:\\Users\\Goran\\.nuget\\packages\\runtime.native.system\\4.3.0\\runtime.native.system.4.3.0.nupkg.sha512",
     "C:\\Users\\Goran\\.nuget\\packages\\serilog\\2.10.0\\serilog.2.10.0.nupkg.sha512",

@@ -17,7 +17,7 @@ namespace AgreementManagement.Repo.Repo
         }
         public IEnumerable<Agreement> GetAgreements()
         {
-            return entities.Include(x => x.Product).Include(x => x.ProductGroup).Include(x => x.User).ToList();
+            return entities.Include(x => x.Product).Include(x => x.User).Include(x => x.ProductGroup).ToList();
         }
         public Agreement GetAgreement(int id)
         {

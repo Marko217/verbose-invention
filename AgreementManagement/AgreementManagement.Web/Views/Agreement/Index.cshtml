@@ -13,12 +13,12 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/numeral.js/2.0.6/numeral.min.js"></script>
 
 @*<script src="~/lib/jquery-validation/dist/jquery.validate.js"></script>
-<script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>*@
+    <script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>*@
 
 <div class="container">
     <div class="row" style="margin-bottom:15px;">
         <div class="col-4">
-            <div class="toast" role="alert" aria-live="assertive" aria-atomic="true" style="background-color:lightgreen">
+            <div class="toast" id="toastLogin" role="alert" aria-live="assertive" aria-atomic="true" style="background-color:lightgreen">
                 <div class="toast-body">
                     <strong>You have successfully logged in!</strong>
                 </div>
@@ -40,7 +40,7 @@
                 <th>Effective Date</th>
                 <th>Expiration Date</th>
                 <th>Product Price</th>
-                <th>New Price</th>  
+                <th>New Price</th>
                 <th>Action</th>
             </tr>
         </thead>
@@ -62,6 +62,8 @@
             </div>
             <div class="modal-body">
                 <form id="addAgreementForm">
+                    <input type="hidden" id="id" name="id" />
+
                     <div class="row form-group">
                         <div class="col-md-6">
                             <label for="group">Group </label>
@@ -78,13 +80,13 @@
                     <div class="row form-group">
                         <div class="col-md-6">
                             <label for="effectiveDate">Effective Date </label>
-                            <input type="date" name="effectiveDate" class="form-control" id="effectiveDate" data-inputmask="'alias': 'date'">
+                            <input type="date" name="effectiveDate" class="form-control" id="effectiveDate">
                             <label style="color:red" id="labelErrorEffectiveDate">Field are required!</label>
 
                         </div>
                         <div class="col-md-6">
                             <label for="expirationDate">Expiration Date </label>
-                            <input type="date" name="expirationDate" class="form-control" id="expirationDate" data-inputmask="'alias': 'date'">
+                            <input type="date" name="expirationDate" class="form-control" id="expirationDate">
                             <label style="color:red" id="labelErrorExpirationDate">Field are required!</label>
 
                         </div>
@@ -98,7 +100,7 @@
                         </div>
                         <div class="col-md-2 offset-2 form-check" style="text-align:center">
                             <label class="form-check-label" for="active">Active</label>
-                            <input type="checkbox" id="active" name="active">
+                            <input class="form-check-input" type="checkbox" value="" id="active" name="active">
                         </div>
                     </div>
                 </form>
@@ -110,33 +112,48 @@
         </div>
     </div>
 </div>
-
+<div class="toast" id="toastSuccesfulAdd" role="alert" aria-live="assertive" aria-atomic="true" style="background-color:lightgreen">
+    <div class="toast-body">
+        <strong>Successful addition of agreement!</strong>
+    </div>
+</div>
+<div class="toast" id="toastErrorAdd" role="alert" aria-live="assertive" aria-atomic="true" style="background-color:orangered">
+    <div class="toast-body">
+        <strong>
+            Error adding agreement!
+        </strong>
+    </div>
+</div>
 
 <script>
     $(function () {
-        $('.toast').toast('show');
-        setTimeout(hideToast, 3000);
-        var tabela = $('#agreementTable').DataTable({})
+        showToast("toastLogin");
+        hideToast("toastSuccesfulAdd");
+        hideToast("toastErrorAdd");
+        setTimeout(hideToast("toastLogin"), 1000);
+        initializationTable("agreementTable");
+        document.getElementById('id').value = 0;
+    });
 
-        //inicijalizacijaTabele('agreementTable');
-        var tabela = $('#agreementTable').DataTable({
+    function initializationTable(tableId) {
+        var table = $('#' + tableId).DataTable({
             "destroy": true,
             "processing": true,
             "serverSide": true,
             "ajax": {
                 "url": "/Agreement/AgreementData",
-                "type": "GET",
+                "type": "POST",
                 "dataType": "json",
                 "context": this,
                 "async": false
             },
             "columns": [
-                { "data": "id" },
-                { "data": "user.userName" },
-                { "data": "productGroupId" },
-                { "data": "productGroup.groupDescription" },
-                { "data": "product.productNumber" },
-                { "data": "product.productDescription" },
+                { "data": "srn" },
+                { "data": "user" },
+                { "data": "groupCode" },
+                { "data": "productGroupDescription" },
+                { "data": "productNumber" },
+                { "data": "productDescription" },
                 { "data": "effectiveDate" },
                 { "data": "expirationDate" },
                 { "data": "productPrice" },
@@ -146,67 +163,93 @@
             "columnDefs": [
                 {
                     "render": function (data, type, row, meta) {
-                        console.log(data);
-                        return tabela.page.info().start + meta.row + 1;
+                        return data;
                     },
-                    "className": "algRight", "searchable": false, "orderable": false, "targets": 0
+                    "searchable": false, "orderable": false, "targets": 0
                 },
-                { "className": "algLeft", "searchable": false, "orderable": false, "targets": 1 },
-                { "className": "algLeft", "searchable": false, "orderable": false, "targets": 2 },
-                { "className": "algLeft", "searchable": false, "orderable": false, "targets": 3 },
-                { "className": "algRight", "searchable": false, "orderable": false, "targets": 4 },
-                { "className": "algLeft", "searchable": false, "orderable": false, "targets": 5 },
-                { "className": "algLeft", "searchable": false, "orderable": false, "targets": 6 },
-                { "className": "algLeft", "searchable": false, "orderable": false, "targets": 7 },
+                { "searchable": false, "orderable": false, "targets": 1 },
+                { "searchable": false, "orderable": false, "targets": 2 },
+                { "searchable": false, "orderable": false, "targets": 3 },
+                { "searchable": false, "orderable": false, "targets": 4 },
+                { "searchable": false, "orderable": false, "targets": 5 },
+                {
+                    "render": function (data, type, row, meta) {
+                        if (data != null)
+                            return moment(data).format('MM/DD/YYYY');
+                        else
+                            return data;
+                    },
+                    "searchable": false, "orderable": false, "targets": 6
+                },
+                {
+                    "render": function (data, type, row, meta) {
+                        if (data != null)
+                            return moment(data).format('MM/DD/YYYY');
+                        else
+                            return data;
+                    },
+                    "searchable": false, "orderable": false, "targets": 7
+                },
                 {
                     "render": function (data, type, row, meta) {
                         return numeral(data).format('0,0.00');
                     },
-                    "className": "algLeft", "searchable": false, "orderable": false, "targets": 8
+                    "searchable": false, "orderable": false, "targets": 8
                 },
                 {
                     "render": function (data, type, row, meta) {
                         return numeral(data).format('0,0.00');
                     },
-                    "className": "algLeft", "searchable": false, "orderable": false, "targets": 9
+                    "searchable": false, "orderable": false, "targets": 9
                 },
                 {
                     "render": function (data, type, row, meta) {
-                        return "<a href='#' class='btn btn-primary' onclick='editAgreement(this)''>" + Edit + "</a>" + " " + "<a href='#' class='btn btn-danger' onclick='deleteAgreement(this)'>" + Delete + "</a>";
+                        return "<a href='#' class='btn btn-primary' onclick='editAgreement(this)'> Edit </a>" + " " + "<a href='#' class='btn btn-danger' onclick='deleteAgreement(this)'> Delete </a>";
 
                         //    return "<a href='#' class='btn btn-danger' onclick=editAgreement('" + row.productGroupId + "," + row.productId + "," + row.effectirningveDate + "," + row.expirationDate + "," + row.newPrice + "'); >Edit</a>" + " " + " <a href='#' class='btn btn-danger' onclick = deleteAgreement('" + data + "'); > Delete</a >";
                     },
-                    "className": "algLeft", "searchable": false, "orderable": false, "targets": 10
+                    "searchable": false, "orderable": false, "targets": 10
                 }
             ],
             "ordering": true,
             "paging": true,
-            "scrollX": true,
-            "pageLength": 20
+            //"scrollX": true,
+            "pageLength": 5
         });
-    });
+    }
 
     function showModal() {
         $('#agreementModal').modal('show');
+
         document.getElementById("labelErrorProduct").style.display = "none";
         document.getElementById("labelErrorGroup").style.display = "none";
         document.getElementById("labelErrorEffectiveDate").style.display = "none";
         document.getElementById("labelErrorExpirationDate").style.display = "none";
         document.getElementById("labelErrorNewPrice").style.display = "none";
     }
-
     function hideModal() {
         $('#agreementModal').modal('hide');
+        document.getElementById('productGroupId').value = "";
+        document.getElementById('productId').value = "";
+        document.getElementById('effectiveDate').value = "";
+        document.getElementById('expirationDate').value = "";
+        document.getElementById('newPrice').value = "";
+        document.getElementById('active').value = "";
+    }
+   
+
+    function showToast(toast) {
+        $('#' + toast).toast('show');
     }
 
-    function hideToast() {
-        $('.toast').toast('hide');
+    function hideToast(toast) {
+        $('#' + toast).toast('hide');
     }
 
     function productData() {
 
         var groupProductId = document.getElementById('productGroupId').value;
-       
+        
         $.ajax({
             type: "GET",
             url: '/Agreement/ProductSelect',
@@ -217,7 +260,6 @@
             context: this,
             async: false,
             success: function (response) {
-                console.log(response);
                 $('#productId').find('option').remove().end()
                 $.each(response, function (i, item) {
                     console.log(item);
@@ -233,6 +275,12 @@
         });
     }
     function postAgreement() {
+        console.log($("#addAgreementForm").serialize());
+        var active = false;
+        if (document.getElementById('active').checked == true) {
+            var active = true;
+        }
+
         $.ajax({
             type: 'POST',
             url: '/Agreement/AddAgreement',
@@ -241,39 +289,30 @@
             contentType: 'application/x-www-form-urlencoded; charset-UTF-8'
         })
             .done(function (response) {
+                hideModal();
                 if (response == "1") {
-                    console.log("Uspesan upis");
-                    //inicijalizacijaTabele();
-                    document.getElementById('productGroupId').value = "";
-                    document.getElementById('productId').value = "";
-                    document.getElementById('effectiveDate').value = "";
-                    document.getElementById('expirationDate').value = "";
-                    document.getElementById('newPrice').value = "";
-                    document.getElementById('active').value = "";
-                    hideModal();
+                    initializationTable("agreementTable");
+                    showToast("toastSuccesfulAdd");
                 }
                 else {
-                    console.log("Greska pri upisu");
+                    showToast("toastErrorAdd");
                 }
             })
             .fail(function (response) {
                 console.log("greska " + response);
+                showToast("toastSuccesfulAdd");
             })
     }
-
-
     function postAgreementValidation() {
-        
+
         var group = document.getElementById('productGroupId').value;
         var product = document.getElementById('productId').value;
         var effectiveDate = document.getElementById('effectiveDate').value;
         var expirationDate = document.getElementById('expirationDate').value;
         var newPrice = document.getElementById('newPrice').value;
-
         if (group != "" && product != "" && effectiveDate != "" && expirationDate != "" && newPrice != "") {
             document.getElementById("newPrice").style.borderColor = "";
             document.getElementById("labelErrorNewPrice").style.display = "none";
-
             postAgreement();
         }
         else {
@@ -316,22 +355,12 @@
         }
 
 
-
-
-
-
-
-        
-
-
-        
     }
-    
+
     function deleteAgreement(elem) {
         var currentRow = $(elem).closest("tr");
         var data = $('#agreementTable').DataTable().row(currentRow).data();
         var id = data['id'];
-
         $.ajax({
             type: "GET",
             url: '/Agreement/DeleteAgrement',
@@ -342,8 +371,8 @@
             context: this,
             async: false,
             success: function (response) {
-                console.log(response);
                 if (response == "1") {
+                    initializationTable("agreementTable");
                     noty({ text: 'Uspesno obrisano!', type: 'success', layout: 'centerBig' }).show();
                 }
                 else {
@@ -352,23 +381,30 @@
             }
         });
     }
-
     function editAgreement(elem) {
-
         var currentRow = $(elem).closest("tr");
         var data = $('#agreementTable').DataTable().row(currentRow).data();
-
-        var group = data['productGroup'];
-        var product = data['product'];
+        console.log(data);
+        var group = data['productGroupId'];
+        var idAgreement = data['id'];
         var effectiveDate = data['effectiveDate'];
         var expirationDate = data['expirationDate'];
         var newPrice = data['newPrice'];
+        var active = data['active'];
+        document.getElementById('productGroupId').value = group;
+        document.getElementById('id').value = idAgreement;
 
-        document.getElementById('group').value = group;
-        document.getElementById('product').value = product;
-        document.getElementById('effectiveDate').value = effectiveDate;
-        document.getElementById('expirationDate').value = expirationDate;
-        document.getElementById('newPrice').value = newPrice;
+        if (active == true) {
+            document.getElementById('active').checked = true;
+        }
+        else {
+            document.getElementById('active').checked = false;
+        }
+        productData();
+
+        document.getElementById('effectiveDate').value = moment(effectiveDate).format('MM/DD/YYYY');
+        document.getElementById('expirationDate').value = moment(expirationDate).format('MM/DD/YYYY');
+        document.getElementById('newPrice').value = numeral(newPrice).format('0,0.00');;
         showModal();
     }
 </script>

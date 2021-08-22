@@ -13,6 +13,7 @@ namespace AgreementManagement.Web.Models
         public decimal? Price { get; set; }
         public bool? Active { get; set; }
 
-        public virtual ProductGroup ProductGroup { get; set; }
+        public string ProductGroup { get; set; }
+        //public virtual ProductGroup ProductGroup { get; set; }
     }
 }
