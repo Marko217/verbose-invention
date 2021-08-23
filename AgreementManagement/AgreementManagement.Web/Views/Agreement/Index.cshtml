@@ -4,16 +4,16 @@
 }
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.4.1/css/bootstrap-datepicker3.css" />
-
-@*<script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.3/dist/jquery.validate.js"></script>*@
-@*<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>*@
 <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-gtEjrD/SeCtmISkJkNUaaKMoLD0//ElJ19smozuHV6z3Iehds+3Ulb9Bn9Plx0x4" crossorigin="anonymous"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.18.1/moment.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/numeral.js/2.0.6/numeral.min.js"></script>
-
+<script src="~/js/customerDatatable.js"></script>
+@*OVO SU PUTANJE DA SE UCITA jQuery validation*@
+@*<script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.3/dist/jquery.validate.js"></script>*@
+@*<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>*@
 @*<script src="~/lib/jquery-validation/dist/jquery.validate.js"></script>
-    <script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>*@
+<script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>*@
 
 <div class="container">
     <div class="row" style="margin-bottom:15px;">
@@ -31,26 +31,23 @@
     <table class="table table-hover" id="agreementTable">
         <thead>
             <tr>
-                <th>#</th>
-                <th>Username</th>
-                <th>Product Group Code</th>
-                <th>Group Description</th>
-                <th>Product Number</th>
-                <th>Product Description</th>
-                <th>Effective Date</th>
-                <th>Expiration Date</th>
-                <th>Product Price</th>
-                <th>New Price</th>
-                <th>Action</th>
+                <th style="text-align:center">#</th>
+                <th style="text-align:center">Username</th>
+                <th style="text-align:center">Product Group Code</th>
+                <th style="text-align:center">Group Description</th>
+                <th style="text-align:center">Product Number</th>
+                <th style="text-align:center">Product Description</th>
+                <th style="text-align:center">Effective Date</th>
+                <th style="text-align:center">Expiration Date</th>
+                <th style="text-align:center">Product Price</th>
+                <th style="text-align:center">New Price</th>
+                <th width="12%" style="text-align:center">Action</th>
             </tr>
         </thead>
         <tbody>
         </tbody>
     </table>
 </div>
-
-
-
 <div class="modal" tabindex="-1" id="agreementModal" role="dialog">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
@@ -62,8 +59,7 @@
             </div>
             <div class="modal-body">
                 <form id="addAgreementForm">
-                    <input type="hidden" id="id" name="id" />
-
+                    <input type="hidden" id="id"/>
                     <div class="row form-group">
                         <div class="col-md-6">
                             <label for="group">Group </label>
@@ -73,7 +69,6 @@
                         <div class="col-md-6">
                             <label for="product">Product </label>
                             <select name="productId" id="productId" asp-items="@ViewBag.Product" class="form-select"></select>
-                            @*<input type="text" name="productId" id="productId"/>*@
                             <label style="color:red" id="labelErrorProduct">Field are required!</label>
                         </div>
                     </div>
@@ -82,25 +77,22 @@
                             <label for="effectiveDate">Effective Date </label>
                             <input type="date" name="effectiveDate" class="form-control" id="effectiveDate">
                             <label style="color:red" id="labelErrorEffectiveDate">Field are required!</label>
-
                         </div>
                         <div class="col-md-6">
                             <label for="expirationDate">Expiration Date </label>
                             <input type="date" name="expirationDate" class="form-control" id="expirationDate">
                             <label style="color:red" id="labelErrorExpirationDate">Field are required!</label>
-
                         </div>
                     </div>
                     <div class="row form-group">
                         <div class="col-md-6">
                             <label for="newPrice">New Price </label>
-                            <input type="number" name="newPrice" class="form-control" id="newPrice" placeholder="0.00" data-inputmask="'alias': 'currency'">
+                            <input type="number" name="newPrice" class="form-control" id="newPrice" placeholder="0.00">
                             <label style="color:red" id="labelErrorNewPrice">Field are required!</label>
-
                         </div>
                         <div class="col-md-2 offset-2 form-check" style="text-align:center">
-                            <label class="form-check-label" for="active">Active</label>
-                            <input class="form-check-input" type="checkbox" value="" id="active" name="active">
+                            <label for="active">Active</label>
+                            <input type="checkbox" value="" id="active" name="active">
                         </div>
                     </div>
                 </form>
@@ -108,6 +100,20 @@
             <div class="modal-footer">
                 <button type="button" onclick="postAgreementValidation()" class="btn btn-primary">Save</button>
                 <button type="button" class="btn btn-secondary" onclick="hideModal()">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-body">
+                <input type="hidden" id="idAgreement" />
+                <h4>Are you sure you want to delete ? </h4>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" onclick="hideDeleteModal('deleteModal')">No</button>
+                <button type="button" class="btn btn-primary" onclick="deleteAgreement()">Yes</button>
             </div>
         </div>
     </div>
@@ -124,7 +130,6 @@
         </strong>
     </div>
 </div>
-
 <script>
     $(function () {
         showToast("toastLogin");
@@ -132,101 +137,26 @@
         hideToast("toastErrorAdd");
         setTimeout(hideToast("toastLogin"), 1000);
         initializationTable("agreementTable");
-        document.getElementById('id').value = 0;
+        productData();
+        initializationTable("tableId");
     });
-
-    function initializationTable(tableId) {
-        var table = $('#' + tableId).DataTable({
-            "destroy": true,
-            "processing": true,
-            "serverSide": true,
-            "ajax": {
-                "url": "/Agreement/AgreementData",
-                "type": "POST",
-                "dataType": "json",
-                "context": this,
-                "async": false
-            },
-            "columns": [
-                { "data": "srn" },
-                { "data": "user" },
-                { "data": "groupCode" },
-                { "data": "productGroupDescription" },
-                { "data": "productNumber" },
-                { "data": "productDescription" },
-                { "data": "effectiveDate" },
-                { "data": "expirationDate" },
-                { "data": "productPrice" },
-                { "data": "newPrice" },
-                { "data": "id" },
-            ],
-            "columnDefs": [
-                {
-                    "render": function (data, type, row, meta) {
-                        return data;
-                    },
-                    "searchable": false, "orderable": false, "targets": 0
-                },
-                { "searchable": false, "orderable": false, "targets": 1 },
-                { "searchable": false, "orderable": false, "targets": 2 },
-                { "searchable": false, "orderable": false, "targets": 3 },
-                { "searchable": false, "orderable": false, "targets": 4 },
-                { "searchable": false, "orderable": false, "targets": 5 },
-                {
-                    "render": function (data, type, row, meta) {
-                        if (data != null)
-                            return moment(data).format('MM/DD/YYYY');
-                        else
-                            return data;
-                    },
-                    "searchable": false, "orderable": false, "targets": 6
-                },
-                {
-                    "render": function (data, type, row, meta) {
-                        if (data != null)
-                            return moment(data).format('MM/DD/YYYY');
-                        else
-                            return data;
-                    },
-                    "searchable": false, "orderable": false, "targets": 7
-                },
-                {
-                    "render": function (data, type, row, meta) {
-                        return numeral(data).format('0,0.00');
-                    },
-                    "searchable": false, "orderable": false, "targets": 8
-                },
-                {
-                    "render": function (data, type, row, meta) {
-                        return numeral(data).format('0,0.00');
-                    },
-                    "searchable": false, "orderable": false, "targets": 9
-                },
-                {
-                    "render": function (data, type, row, meta) {
-                        return "<a href='#' class='btn btn-primary' onclick='editAgreement(this)'> Edit </a>" + " " + "<a href='#' class='btn btn-danger' onclick='deleteAgreement(this)'> Delete </a>";
-
-                        //    return "<a href='#' class='btn btn-danger' onclick=editAgreement('" + row.productGroupId + "," + row.productId + "," + row.effectirningveDate + "," + row.expirationDate + "," + row.newPrice + "'); >Edit</a>" + " " + " <a href='#' class='btn btn-danger' onclick = deleteAgreement('" + data + "'); > Delete</a >";
-                    },
-                    "searchable": false, "orderable": false, "targets": 10
-                }
-            ],
-            "ordering": true,
-            "paging": true,
-            //"scrollX": true,
-            "pageLength": 5
-        });
-    }
 
     function showModal() {
         $('#agreementModal').modal('show');
-
         document.getElementById("labelErrorProduct").style.display = "none";
         document.getElementById("labelErrorGroup").style.display = "none";
         document.getElementById("labelErrorEffectiveDate").style.display = "none";
         document.getElementById("labelErrorExpirationDate").style.display = "none";
         document.getElementById("labelErrorNewPrice").style.display = "none";
+
+        document.getElementById("productGroupId").style.borderColor = "";
+        document.getElementById("productId").style.borderColor = "";
+        document.getElementById("effectiveDate").style.borderColor = "";
+        document.getElementById("expirationDate").style.borderColor = "";
+        document.getElementById("newPrice").style.borderColor = "";
+
     }
+
     function hideModal() {
         $('#agreementModal').modal('hide');
         document.getElementById('productGroupId').value = "";
@@ -236,7 +166,14 @@
         document.getElementById('newPrice').value = "";
         document.getElementById('active').value = "";
     }
-   
+
+    function deleteModalAgreement(elem) {
+        var currentRow = $(elem).closest("tr");
+        var data = $('#agreementTable').DataTable().row(currentRow).data();
+        var id = data['id'];
+        $('#deleteModal').modal('show');
+        document.getElementById('idAgreement').value = id;
+    }
 
     function showToast(toast) {
         $('#' + toast).toast('show');
@@ -247,9 +184,7 @@
     }
 
     function productData() {
-
         var groupProductId = document.getElementById('productGroupId').value;
-        
         $.ajax({
             type: "GET",
             url: '/Agreement/ProductSelect',
@@ -262,7 +197,6 @@
             success: function (response) {
                 $('#productId').find('option').remove().end()
                 $.each(response, function (i, item) {
-                    console.log(item);
                     $('#productId').append($('<option>', {
                         value: item.id,
                         text: item.productDescription
@@ -274,13 +208,12 @@
             }
         });
     }
+
     function postAgreement() {
-        console.log($("#addAgreementForm").serialize());
         var active = false;
         if (document.getElementById('active').checked == true) {
             var active = true;
         }
-
         $.ajax({
             type: 'POST',
             url: '/Agreement/AddAgreement',
@@ -299,12 +232,12 @@
                 }
             })
             .fail(function (response) {
-                console.log("greska " + response);
+                console.log(response);
                 showToast("toastSuccesfulAdd");
             })
     }
-    function postAgreementValidation() {
 
+    function postAgreementValidation() {
         var group = document.getElementById('productGroupId').value;
         var product = document.getElementById('productId').value;
         var effectiveDate = document.getElementById('effectiveDate').value;
@@ -353,14 +286,10 @@
                 document.getElementById("labelErrorGroup").style.display = "block";
             }
         }
-
-
     }
 
-    function deleteAgreement(elem) {
-        var currentRow = $(elem).closest("tr");
-        var data = $('#agreementTable').DataTable().row(currentRow).data();
-        var id = data['id'];
+    function deleteAgreement() {
+        var id = document.getElementById('idAgreement').value;
         $.ajax({
             type: "GET",
             url: '/Agreement/DeleteAgrement',
@@ -372,19 +301,16 @@
             async: false,
             success: function (response) {
                 if (response == "1") {
+                    hideDeleteModal("deleteModal");
                     initializationTable("agreementTable");
-                    noty({ text: 'Uspesno obrisano!', type: 'success', layout: 'centerBig' }).show();
-                }
-                else {
-                    noty({ text: 'Neuspesno obrisan!', type: 'error', layout: 'centerBig' }).show();
                 }
             }
         });
     }
+
     function editAgreement(elem) {
         var currentRow = $(elem).closest("tr");
         var data = $('#agreementTable').DataTable().row(currentRow).data();
-        console.log(data);
         var group = data['productGroupId'];
         var idAgreement = data['id'];
         var effectiveDate = data['effectiveDate'];
@@ -393,6 +319,7 @@
         var active = data['active'];
         document.getElementById('productGroupId').value = group;
         document.getElementById('id').value = idAgreement;
+        productData();
 
         if (active == true) {
             document.getElementById('active').checked = true;
@@ -400,11 +327,12 @@
         else {
             document.getElementById('active').checked = false;
         }
-        productData();
-
-        document.getElementById('effectiveDate').value = moment(effectiveDate).format('MM/DD/YYYY');
-        document.getElementById('expirationDate').value = moment(expirationDate).format('MM/DD/YYYY');
-        document.getElementById('newPrice').value = numeral(newPrice).format('0,0.00');;
+        document.getElementById('effectiveDate').value = moment(effectiveDate).format('YYYY-MM-DD');
+        document.getElementById('expirationDate').value = moment(expirationDate).format('YYYY-MM-DD');
+        document.getElementById('newPrice').value = newPrice;
         showModal();
+    }
+    function hideDeleteModal(id) {
+        $('#' + id).modal('hide');
     }
 </script>

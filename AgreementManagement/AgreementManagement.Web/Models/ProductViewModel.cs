@@ -14,6 +14,5 @@ namespace AgreementManagement.Web.Models
         public bool? Active { get; set; }
 
         public string ProductGroup { get; set; }
-        //public virtual ProductGroup ProductGroup { get; set; }
     }
 }

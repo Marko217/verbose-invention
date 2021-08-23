@@ -11,7 +11,6 @@ using System.Threading.Tasks;
 
 namespace AgreementManagement.Web.Controllers
 {
-
     public class AuhtActionFilterAttribute : ActionFilterAttribute
     {
         public AuhtActionFilterAttribute()

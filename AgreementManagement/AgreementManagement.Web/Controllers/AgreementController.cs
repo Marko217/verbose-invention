@@ -33,16 +33,13 @@ namespace WebApplication.Controllers
         }
 
         [ServiceFilter(typeof(AuhtActionFilterAttribute))]
-        //[Authorize]
         [HttpGet]
         public IActionResult Index()
         {
             IEnumerable<ProductGroup> listProductGroups = _productGroupService.GetProductGroups();
             var list = _mapper.Map<List<ProductGroup>, List<ProductGroupViewModel>>(listProductGroups.ToList());
-
             var productGroupList = new List<SelectListItem>();
             bool selected = true;
-
             foreach (var item in list)
             {
                 if (selected)
@@ -55,7 +52,6 @@ namespace WebApplication.Controllers
                     selected = false;
                 }
             }
-
             ViewBag.ProductGroup = productGroupList;
             return View();
         }
@@ -76,7 +72,6 @@ namespace WebApplication.Controllers
                 else
                 {
                     Product product = _productService.GetProduct(vm.ProductId);
-
                     entity = _agreementService.GetAgreement(vm.Id);
                     entity.ProductGroupId = vm.ProductGroupId;
                     entity.ProductId = vm.ProductId;

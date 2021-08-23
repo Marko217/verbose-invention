@@ -22,9 +22,5 @@ namespace AgreementManagement.Web.Models
         public string ProductGroupDescription { get; set; }
         public Guid? GroupCode { get; set; }
         public string User { get; set; }
-
-        //public virtual Product Product { get; set; }
-        //public virtual ProductGroup ProductGroup { get; set; }
-        //public virtual AspNetUser User { get; set; }
     }
 }
